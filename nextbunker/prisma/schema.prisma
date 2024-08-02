@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id       String @id @default(uuid())
+  userId   String @unique
+  name     String
+  imageUrl String @db.Text
+  email    String @db.Text
+
+  character Character[]
+  bunker    Bunker[]
+  vote      Vote[]
+  members   Member[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Character {
+  id      String  @id @default(uuid())
+  userId  String
+  profile Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  biology    String
+  profession String
+  health     String
+  item       String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Bunker {
+  id         String       @id @default(uuid())
+  name       String
+  inviteCode String       @unique
+  status     BunkerStatus @default(OPEN)
+
+  profileId String
+
+  room    Room[]
+  members Member[]
+  ownerId String
+  owner   Profile  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ownerId])
+}
+
+enum BunkerStatus {
+  OPEN
+  IN_PROCESS
+  FULL
+  CLOSED
+}
+
+model Member {
+  id        String  @id @default(uuid())
+  role MemberRole @default(SURVIVOR) 
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  bunkerId  String
+  bunker    Bunker  @relation(fields: [bunkerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId])
+  @@index([bunkerId])
+}
+
+model Room {
+  id       String @id @default(uuid())
+  bunkerId String
+  bunker   Bunker @relation(fields: [bunkerId], references: [id], onDelete: Cascade)
+
+  votes Vote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([bunkerId])
+}
+
+model Vote {
+  id     String  @id @default(uuid())
+  userId String
+  user   Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roomId String
+  room   Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  vote String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([roomId])
+}
+
+enum MemberRole {
+  ADMIN 
+  SURVIVOR
+}
+
+
+
+

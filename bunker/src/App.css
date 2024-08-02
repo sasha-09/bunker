@@ -1,31 +1,30 @@
-.btn-start{
+.btn-start {
   background-color: gold;
   padding: 10px;
-  }
-  body{
-      color: rgb(255, 217, 0);
-      background-color: black;
-  }
+}
+body {
+  color: rgb(255, 217, 0);
+  background-color: black;
+}
 
-  .heartBit {
-    animation: heartBeatAnimation 2s infinite;
+.heartBit {
+  animation: heartBeatAnimation 2s infinite;
+}
+
+@keyframes heartBeatAnimation {
+  0% {
+    transform: scale(1);
   }
-  
-  @keyframes heartBeatAnimation {
-    0% {
-      transform: scale(1);
-    }
-    25% {
-      transform: scale(1.1);
-    }
-    50% {
-      transform: scale(1);
-    }
-    75% {
-      transform: scale(1.1);
-    }
-    100% {
-      transform: scale(1);
-    }
+  25% {
+    transform: scale(1.1);
   }
-  
+  50% {
+    transform: scale(1);
+  }
+  75% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

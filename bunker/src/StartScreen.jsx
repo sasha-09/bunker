@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import LobbuScreen from "./LobbuScreen";
 const StartScreen = () => {
   return (
     <div>
@@ -16,9 +17,12 @@ const StartScreen = () => {
         свои карты и готовтесь использовать уловки и стратегии.Прятной игры
       </p>
       <button class="btn-start">
-      <Link to={`game`}>start game</Link>
+      <Link to={`lobbu`}>start game</Link>
 
       </button>
+
+    
+
     </div>
   );
 };

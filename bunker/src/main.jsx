@@ -8,6 +8,8 @@ import {
 } from "react-router-dom";
 import StartScreen from './StartScreen.jsx';
 import GameScreen from './GameScreen.jsx';
+import StartRoom from './StartRoom.jsx';
+import LobbuScreen from './LobbuScreen.jsx';
 
 const router = createBrowserRouter([
   {
@@ -15,9 +17,18 @@ const router = createBrowserRouter([
     element:<StartScreen/>
   },
   {
-    path: "/game",
+    path: "/lobbu/room/game",
     element: <GameScreen/>
   },
+  {
+    path: "/lobbu/room",
+    element: <StartRoom/>
+  },
+  {
+    path: "/lobbu",
+    element: <LobbuScreen/>
+  },
+  
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(

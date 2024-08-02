@@ -2,8 +2,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-
+@font-face {
+  font-family:"montserrat" ;
+  src: url("./Montserrat-VariableFont_wght.ttf");
+}
+@font-face {
+  font-family:"russo" ;
+  src: url("./RussoOne-Regular.ttf");
+}
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
