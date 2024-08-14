@@ -49,13 +49,13 @@ model Bunker {
 
   room    Room[]
   members Member[]
-  ownerId String
-  owner   Profile  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+ 
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([ownerId])
+  @@index([profileId])
 }
 
 enum BunkerStatus {
