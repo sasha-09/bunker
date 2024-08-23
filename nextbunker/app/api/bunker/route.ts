@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   try {
     const { name } = await req.json();
 
-    console.log("Мы тут2")
+
   
     const profile = await currentProfile();
 
@@ -36,5 +36,14 @@ export async function POST(req: Request) {
   } catch (error) {
     console.log("[BUNKERS_POST]", error);
     return new NextResponse("Internal Error", { status: 500 });
+  }
+}
+export async function GET () {
+  try {
+  const bunkers= await db.bunker.findMany()
+  return NextResponse.json(bunkers)
+  } catch (error) {
+  console.log (error)   
+  return NextResponse.json({error:"бункер не найден"},{status:500})
   }
 }

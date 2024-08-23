@@ -11,7 +11,7 @@ export const NavigationServer = () => {
     if(!profile) {
         return redirect('/')
     }
-const bunker =  db.bunker.findMany()
+
 
 
   return (
