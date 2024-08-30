@@ -64,17 +64,17 @@ export const InitialModal = () => {
     }
   };
 
-  // const fetchBunkers = async () => {
-  //   setLoadingBunkers(true)
-  //   try {
-  //     const saveResponce = await axios.get("/api/bunker");
-  //     setBunkers(saveResponce.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }finally{
-  //     setLoadingBunkers(false)
-  //   }
-  // };
+  const fetchBunkers = async () => {
+    setLoadingBunkers(true)
+    try {
+      const saveResponce = await axios.get("/api/bunker");
+      setBunkers(saveResponce.data);
+    } catch (error) {
+      console.log(error);
+    }finally{
+      setLoadingBunkers(false)
+    }
+  };
 
   if (!isMounted) {
     return null;
@@ -117,9 +117,10 @@ export const InitialModal = () => {
         </Form>
         <DialogHeader className="pt-8 px-6">
           <DialogTitle>Выбрать бункер</DialogTitle>
-          <Button type="submit">
-            {/* {loadingBunkers?"загрузка":"показать сервера"} */}
+          <Button type="submit" onClick={fetchBunkers}>
+            {loadingBunkers?"загрузка":"показать сервера"}
           </Button>
+          <ul>{bunkers.map((bunker:any) =>(<li key={bunker.id}>{bunker.name}</li>) )}</ul>
           <NavigationServer />
         </DialogHeader>
       </DialogContent>

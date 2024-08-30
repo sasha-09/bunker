@@ -27,7 +27,7 @@ model Character {
   id      String  @id @default(uuid())
   userId  String
   profile Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+name String
   biology    String
   profession String
   health     String
@@ -47,7 +47,7 @@ model Bunker {
 
   profileId String
 
-  room    Room[]
+  game    Game[]
   members Member[]
  
   profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -80,7 +80,7 @@ model Member {
   @@index([bunkerId])
 }
 
-model Room {
+model Game {
   id       String @id @default(uuid())
   bunkerId String
   bunker   Bunker @relation(fields: [bunkerId], references: [id], onDelete: Cascade)
@@ -97,8 +97,8 @@ model Vote {
   id     String  @id @default(uuid())
   userId String
   user   Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
-  roomId String
-  room   Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  gameId String
+  game   Game    @relation(fields: [gameId], references: [id], onDelete: Cascade)
 
   vote String
 
@@ -106,7 +106,7 @@ model Vote {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
-  @@index([roomId])
+  @@index([gameId])
 }
 
 enum MemberRole {

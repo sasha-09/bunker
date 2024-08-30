@@ -1,4 +1,4 @@
-"use client"
+// "use client"
 
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
@@ -6,11 +6,11 @@ import { redirect } from "next/navigation";
 
 export const NavigationServer = () => {
 
-    const profile =  currentProfile()
+    // const profile = currentProfile()
 
-    if(!profile) {
-        return redirect('/')
-    }
+    // if(!profile) {
+    //     return redirect('/')
+    // }
 
 
 
