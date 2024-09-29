@@ -8,12 +8,13 @@ datasource db {
 }
 
 model Profile {
-  id       String @id @default(uuid())
-  userId   String @unique
-  name     String
-  imageUrl String @db.Text
-  email    String @db.Text
-
+  id        String      @id @default(uuid())
+  userId    String      @unique
+  name      String
+  imageUrl  String      @db.Text
+  email     String      @db.Text
+  isBot     Boolean     @default(false)
+  // реверс в правду
   character Character[]
   bunker    Bunker[]
   vote      Vote[]
@@ -24,10 +25,10 @@ model Profile {
 }
 
 model Character {
-  id      String  @id @default(uuid())
-  userId  String
-  profile Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
-name String
+  id         String  @id @default(uuid())
+  userId     String
+  profile    Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
   biology    String
   profession String
   health     String
@@ -49,8 +50,8 @@ model Bunker {
 
   game    Game[]
   members Member[]
- 
-  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -66,12 +67,12 @@ enum BunkerStatus {
 }
 
 model Member {
-  id        String  @id @default(uuid())
-  role MemberRole @default(SURVIVOR) 
+  id        String     @id @default(uuid())
+  role      MemberRole @default(SURVIVOR)
   profileId String
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profile   Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
   bunkerId  String
-  bunker    Bunker  @relation(fields: [bunkerId], references: [id], onDelete: Cascade)
+  bunker    Bunker     @relation(fields: [bunkerId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -81,16 +82,24 @@ model Member {
 }
 
 model Game {
-  id       String @id @default(uuid())
+  id       String    @id @default(uuid())
   bunkerId String
-  bunker   Bunker @relation(fields: [bunkerId], references: [id], onDelete: Cascade)
-
-  votes Vote[]
+  bunker   Bunker    @relation(fields: [bunkerId], references: [id], onDelete: Cascade)
+  phase    GamePhase @default(WAITING)
+  votes    Vote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([bunkerId])
+}
+
+enum GamePhase {
+  WAITING
+  CHARACTER_SELECTION
+  DISCUSSION
+  VOTING
+  FINAL
 }
 
 model Vote {
@@ -99,8 +108,8 @@ model Vote {
   user   Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
   gameId String
   game   Game    @relation(fields: [gameId], references: [id], onDelete: Cascade)
-
-  vote String
+  resut  Boolean @default(false)
+  vote   String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -110,9 +119,400 @@ model Vote {
 }
 
 enum MemberRole {
-  ADMIN 
+  ADMIN
   SURVIVOR
+  BOT
 }
+
+model Action {
+id     String  @id @default(uuid())
+ gameId String
+  // game   Game    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  // (привязать)
+   userId String
+  // user   Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+// (привязать)
+action ActionType 
+targetId String? 
+ createdAt DateTime @default(now()) 
+ updatedAt DateTime @updatedAt
+
+@@index([gameId])
+@@index([userId])
+}
+enum ActionType{
+DISCUSS
+VOTE
+SKIP
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
