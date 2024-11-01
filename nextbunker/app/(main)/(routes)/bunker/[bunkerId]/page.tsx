@@ -1,31 +1,67 @@
 "use client";
 import { useLobbyStore } from "@/app/store/lobbyStore";
 import { ModeToggle } from "@/components/mode-toggle";
-import { Button } from "@/components/ui/button";
+import { currentProfile } from "@/lib/current-profile";
 import { UserButton } from "@clerk/nextjs";
-import { link } from "fs";
-import Image from "next/image";
-import { useRouter } from "next/router";
-
-import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const router = useRouter();
+  const searchParams = useSearchParams();
+  const lobbyId = searchParams.get("lobbyId");
 
-  const { lobbyId } = router.query;
-  const { players, addBot, removeBot, startGame, setLobbyData } =
-    useLobbyStore();
+  const {
+    players = [],
+    addBot,
+    removeBot,
+    startGame,
+    setLobbyData,
+  } = useLobbyStore();
 
-  const create = async () => {
-    const newBot = {
-      id: Date.now().toString(),
-      name: `bot ${players.length + 1}`,
-      isBot: true,
+  const [currentUser, setCurrentUser] = useState<{ name: string } | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const profile = await currentProfile();
+      setCurrentUser(profile);
     };
-    const updatePlayers = [...players, newBot];
-    // await updateLobbyData (lobbyId,updatePlayers,"OPEN")
+    fetchProfile();
+  }, []);
+
+
+  const create = () => {
+    // щас вернемся
+    if (players.length <= 8) {
+      addBot();
+    } else {
+      alert("MAX 8 PLAYERS");
+    }
     addBot();
   };
+
+  const removeLastBot = () => {
+    const lastBot = [...players].reverse().find((player) => player.isBot);
+    if (lastBot) {
+      removeBot(lastBot.id);
+    }
+  };
+
+  const handleStartGame = async () => {
+    if (players.length === 7) {
+      startGame();
+      try{
+        await fetch(`/api/bunker/${lobbyId}/start`,{
+          method:"POST"
+        })
+      } catch(error){
+        console.log(error)
+      }
+    }
+    else{
+      console.log("минимум 8 игроков")
+    }
+  };
+
   useEffect(() => {
     const fetchLobbyData = async () => {
       try {
@@ -36,23 +72,32 @@ export default function Home() {
         console.log(error);
       }
     };
-    fetchLobbyData();
-  }, []);
+    if (lobbyId) fetchLobbyData();
+  }, [lobbyId, setLobbyData]);
+  // ЗАВИСИМОСТЬ
   return (
     <div>
       <h1 className="text-3xl">бункер</h1>
       <h1 className="text-3xl">лобби</h1>
+      {currentUser&&<p>текуший игрок:{currentUser.name}</p>}
       <ul>
         {players.map((player) => (
-          <li>{player.name}</li>
+          <li key={player.id}>{player.name}</li>
         ))}
       </ul>
-      <button onClick={create}>добавить бота</button>
-      <button>удалить бота</button>
-      <button disabled={players.length < 7}>начать игру</button>
+      <button onClick={create} disabled={players.length >= 8}>
+        добавить бота
+      </button>
+      <button onClick={removeLastBot} disabled={players.length < 1}>
+        удалить бота
+      </button>
+      <button onClick={handleStartGame} disabled={players.length < 8}>
+        начать игру
+      </button>
 
       <UserButton />
       <ModeToggle />
     </div>
   );
 }
+
