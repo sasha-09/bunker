@@ -2,14 +2,14 @@
 import { useLobbyStore } from "@/app/store/lobbyStore";
 import { ModeToggle } from "@/components/mode-toggle";
 import { currentProfile } from "@/lib/current-profile";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const searchParams = useSearchParams();
   const lobbyId = searchParams.get("lobbyId");
-
+  const { user } = useUser();
   const {
     players = [],
     addBot,
@@ -17,17 +17,6 @@ export default function Home() {
     startGame,
     setLobbyData,
   } = useLobbyStore();
-
-  const [currentUser, setCurrentUser] = useState<{ name: string } | null>(null);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const profile = await currentProfile();
-      setCurrentUser(profile);
-    };
-    fetchProfile();
-  }, []);
-
 
   const create = () => {
     // щас вернемся
@@ -39,26 +28,25 @@ export default function Home() {
     addBot();
   };
 
-  const removeLastBot = () => {
-    const lastBot = [...players].reverse().find((player) => player.isBot);
-    if (lastBot) {
-      removeBot(lastBot.id);
-    }
-  };
+  // const removeLastBot = () => {
+  //   const lastBot = [...players].reverse().find((player) => player.isBot);
+  //   if (lastBot) {
+  //     removeBot(lastBot.id);
+  //   }
+  // };
 
   const handleStartGame = async () => {
     if (players.length === 7) {
       startGame();
-      try{
-        await fetch(`/api/bunker/${lobbyId}/start`,{
-          method:"POST"
-        })
-      } catch(error){
-        console.log(error)
+      try {
+        await fetch(`/api/bunker/${lobbyId}/start`, {
+          method: "POST",
+        });
+      } catch (error) {
+        console.log(error);
       }
-    }
-    else{
-      console.log("минимум 8 игроков")
+    } else {
+      console.log("минимум 8 игроков");
     }
   };
 
@@ -79,19 +67,20 @@ export default function Home() {
     <div>
       <h1 className="text-3xl">бункер</h1>
       <h1 className="text-3xl">лобби</h1>
-      {currentUser&&<p>текуший игрок:{currentUser.name}</p>}
+      {user&&user.emailAddresses[0]?.emailAddress}
       <ul>
         {players.map((player) => (
-          <li key={player.id}>{player.name}</li>
+          <li key={player.id}>{player.name}     <button onClick={() => removeBot(player.id)} disabled={players.length < 1}>
+          удалить бота
+        </button></li>
+          
         ))}
       </ul>
-      <button onClick={create} disabled={players.length >= 8}>
+      <button onClick={addBot} disabled={players.length >= 8}>
         добавить бота
       </button>
-      <button onClick={removeLastBot} disabled={players.length < 1}>
-        удалить бота
-      </button>
-      <button onClick={handleStartGame} disabled={players.length < 8}>
+  
+      <button onClick={startGame} disabled={players.length <= 7}>
         начать игру
       </button>
 
@@ -100,4 +89,3 @@ export default function Home() {
     </div>
   );
 }
-
