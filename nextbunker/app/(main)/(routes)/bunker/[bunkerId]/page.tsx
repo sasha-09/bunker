@@ -3,10 +3,12 @@ import { useLobbyStore } from "@/app/store/lobbyStore";
 import { ModeToggle } from "@/components/mode-toggle";
 import { currentProfile } from "@/lib/current-profile";
 import { UserButton, useUser } from "@clerk/nextjs";
-import { useSearchParams } from "next/navigation";
+import { Router } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Home() {
+  const router = useRouter()
   const searchParams = useSearchParams();
   const lobbyId = searchParams.get("lobbyId");
   const { user } = useUser();
@@ -35,16 +37,10 @@ export default function Home() {
   //   }
   // };
 
-  const handleStartGame = async () => {
-    if (players.length === 7) {
-      startGame();
-      try {
-        await fetch(`/api/bunker/${lobbyId}/start`, {
-          method: "POST",
-        });
-      } catch (error) {
-        console.log(error);
-      }
+  const handleStartGame = () => {
+    if (players.length === 8) {
+      const gameId = startGame()
+      router.push(`/game/${gameId}`)
     } else {
       console.log("минимум 8 игроков");
     }
@@ -80,7 +76,7 @@ export default function Home() {
         добавить бота
       </button>
   
-      <button onClick={startGame} disabled={players.length <= 7}>
+      <button onClick={handleStartGame} disabled={players.length <= 7}>
         начать игру
       </button>
 

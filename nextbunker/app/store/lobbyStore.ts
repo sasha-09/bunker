@@ -1,3 +1,4 @@
+import { date } from "zod";
 import create from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -45,7 +46,9 @@ export const useLobbyStore = create<LobbyState>()(
         }));
       },
       startGame:()=>{
+        const gameId=Date.now().toString()
         set({status:"IN_PROCESS"})
+        return gameId
       },
       // Установка данных лобби
       setLobbyData: (lobbyId, players, status) => {
