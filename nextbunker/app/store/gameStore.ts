@@ -1,5 +1,3 @@
-import { Bot } from "lucide-react";
-import { boolean, string } from "zod";
 import { create } from "zustand";
 
 interface Player {
@@ -19,17 +17,17 @@ interface Character {
 }
 interface GameState {
   gameId: string | null;
-  phase: " WAITING" | "CHARACTER_SELECTION" | "DISCUSSION" | "VOTING" | "FINAL";
+  phase: "WAITING" | "CHARACTER_SELECTION" | "DISCUSSION" | "VOTING" | "FINAL";
   players: Player[];
   actions: { [playerId: string]: string };
-  setGameData: (game: string, players: Player[]) => void;
+  setGameData: (gameId: string, players: Player[]) => void;
   assignCharacters: () => void;
   nextPhase: () => void;
   addAction: (playerId: string, action: string) => void;
 }
 export const useGameStore = create<GameState>()((set) => ({
   gameId: null,
-  phase: " WAITING",
+  phase: "WAITING",
   players: [],
   actions: {},
   setGameData: (gameId, players) => {
@@ -45,26 +43,26 @@ export const useGameStore = create<GameState>()((set) => ({
         health: "треснутый",
         item: "иголка",
       }));
-      const updatetPlayers = state.players.map((player, index) => ({
+      const updatedPlayers = state.players.map((player, index) => ({
         ...player,
         character: characters[index],
       }));
       return {
-        players: updatetPlayers,
+        players: updatedPlayers,
       };
     });
   },
   nextPhase: () => {
     set((state) => {
-      const phase: readonly GameState["phase"][] = [
-        " WAITING",
+      const phases: readonly GameState["phase"][] = [
+        "WAITING",
         "CHARACTER_SELECTION",
         "DISCUSSION",
         "VOTING",
         "FINAL",
       ];
-      const currentIndex = phase.indexOf(state.phase);
-      const nextPhase = phase[currentIndex + 1] || "FINAL";
+      const currentIndex = phases.indexOf(state.phase);
+      const nextPhase = phases[currentIndex + 1] || "FINAL";
       return {
         phase: nextPhase,
       };

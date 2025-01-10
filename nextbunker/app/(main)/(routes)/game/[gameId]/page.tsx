@@ -15,7 +15,7 @@ export default function GamaPage({ params }: { params: { gameId: string } }) {
       try {
         const r = await fetch(`/api/game/${gameId}`);
         if (!r.ok) {
-          throw new Error("Ашибка о получинии игровых данных");
+          throw new Error("ошибка о получинии игровых данных");
         }
         const data = await r.json();
         setGameData(gameId, data.players);
@@ -26,25 +26,52 @@ export default function GamaPage({ params }: { params: { gameId: string } }) {
     fetchGameData();
   }, [gameId, setGameData]);
 
-
-  
   useEffect(() => {
-
-
-
-
-
-
-
-
-
     if (phase === "CHARACTER_SELECTION") {
       assignCharacters();
     }
-  }, [[phase, assignCharacters]]);
+  }, [phase, assignCharacters]);
+  
   const handleNextPhase = () => {
     nextPhase();
   };
+
+  const renderPhaseContent = () => {
+    switch (phase) {
+      case "WAITING":
+        return;
+        <p>мы ждем игроков</p>;
+        break;
+      case "CHARACTER_SELECTION":
+        return;
+        <p>загрзка персонажей</p>;
+        break;
+      case "DISCUSSION":
+        return;
+        <p>дискутирование</p>;
+        break;
+      case "VOTING":
+        return;
+        <p>голосование</p>;
+        break;
+      case "FINAL":
+        return;
+        <p>финал</p>;
+
+        break;
+      default:
+        return;
+        <p>хз какая фазв</p>;
+        break;
+    }    
+  };    
+//  _______________________  
+//   //     *             |
+//   //    <=>            |
+//   //   <<=>>           |
+//   //  <<<=>>>          |
+//   // <<<===>>>         |
+// _______________________|
   return (
     <div>
       <h1 className="text-3xl">Игра</h1>
@@ -63,6 +90,8 @@ export default function GamaPage({ params }: { params: { gameId: string } }) {
           <li>игроки загружаются</li>
         )}
       </ul>
+      {renderPhaseContent()}
+      
       {phase !== "FINAL" && <button onClick={handleNextPhase}>+фаза</button>}
       {/* <button>-фаза</button> */}
     </div>
