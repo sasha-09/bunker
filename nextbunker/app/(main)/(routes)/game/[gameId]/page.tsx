@@ -90,7 +90,7 @@ export default function GamaPage({ params }: { params: { gameId: string } }) {
           <li>игроки загружаются</li>
         )}
       </ul>
-      {renderPhaseContent()}
+      {renderPhaseContnt()}
       
       {phase !== "FINAL" && <button onClick={handleNextPhase}>+фаза</button>}
       {/* <button>-фаза</button> */}
