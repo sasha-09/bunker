@@ -1,4 +1,3 @@
-import { date } from "zod";
 import create from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -26,33 +25,52 @@ export const useLobbyStore = create<LobbyState>()(
       lobbyId: null,
       // Добавление бота
       addBot: () => {
-        set((state) => ({
-          players: [
-            ...state.players,
-            {
-              id: Date.now().toString(),
-              name: `bot ${state.players.length + 1}`,
-              isBot: true,
-            },
-          ],
-        }));
+        set((state) => {
+          if (!Array.isArray(state.players)) {
+            console.error("Ошибка: players должен быть массивом");
+            return { players: [] }; // Исправляем состояние
+          }
+
+          return {
+            players: [
+              ...state.players,
+              {
+                id: Date.now().toString(),
+                name: `bot ${state.players.length + 1}`,
+                isBot: true,
+              },
+            ],
+          };
+        });
       },
       // Удаление бота
       removeBot: (id) => {
-        set((state) => ({
-          players: state.players.filter(
-            (player) => player.id !== id || !player.isBot
-          ),
-        }));
+        set((state) => {
+          if (!Array.isArray(state.players)) {
+            console.error("Ошибка: players должен быть массивом");
+            return { players: [] }; // Исправляем состояние
+          }
+
+          return {
+            players: state.players.filter(
+              (player) => player.id !== id || !player.isBot
+            ),
+          };
+        });
       },
-      startGame:()=>{
-        const gameId=Date.now().toString()
-        set({status:"IN_PROCESS"})
-        return gameId
+      startGame: () => {
+        const gameId = Date.now().toString(); // Пример генерации gameId
+        set({ status: "IN_PROCESS" });
+        return gameId; // Возвращаем gameId для редиректа
       },
+
       // Установка данных лобби
       setLobbyData: (lobbyId, players, status) => {
-        set({ lobbyId, players, status });
+        set({
+          lobbyId,
+          players: Array.isArray(players) ? players : [], // Защита от некорректных данных
+          status,
+        });
       },
     }),
     { name: "lobby-storage" }
