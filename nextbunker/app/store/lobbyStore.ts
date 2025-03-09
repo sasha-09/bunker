@@ -24,38 +24,83 @@ export const useLobbyStore = create<LobbyState>()(
       status: "OPEN",
       lobbyId: null,
       // Добавление бота
-      addBot: () => {
-        set((state) => {
-          if (!Array.isArray(state.players)) {
-            console.error("Ошибка: players должен быть массивом");
-            return { players: [] }; // Исправляем состояние
-          }
 
-          return {
-            players: [
-              ...state.players,
-              {
-                id: Date.now().toString(),
-                name: `bot ${state.players.length + 1}`,
-                isBot: true,
+      addBot: async () => {
+        set(async (state) => {
+          try {
+            const response = await fetch(`/api/bunker/${state.lobbyId}/add-bot`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
               },
-            ],
-          };
+            });
+      
+            if (!response.ok) {
+              throw new Error("Ошибка при добавлении бота");
+            }
+      
+            const { botId } = await response.json();
+      
+            return {
+              players: [
+                ...state.players,
+                {
+                  id: botId,
+                  name: `Bot ${state.players.length + 1}`,
+                  isBot: true,
+                },
+              ],
+            };
+          } catch (error) {
+            console.error(error);
+            return state; // Если ошибка, не меняем состояние
+          }
         });
       },
-      // Удаление бота
-      removeBot: (id) => {
-        set((state) => {
-          if (!Array.isArray(state.players)) {
-            console.error("Ошибка: players должен быть массивом");
-            return { players: [] }; // Исправляем состояние
-          }
 
-          return {
-            players: state.players.filter(
-              (player) => player.id !== id || !player.isBot
-            ),
-          };
+      // addBot: () => {
+      //   set((state) => {
+      //     if (!Array.isArray(state.players)) {
+      //       console.error("Ошибка: players должен быть массивом");
+      //       return { players: [] }; // Исправляем состояние
+      //     }
+
+      //     return {
+      //       players: [
+      //         ...state.players,
+      //         {
+      //           id: Date.now().toString(),
+      //           name: `bot ${state.players.length + 1}`,
+      //           isBot: true,
+      //         },
+      //       ],
+      //     };
+      //   });
+      // },
+      // Удаление бота
+      // Удаление бота
+      removeBot: async (id) => {
+        set(async (state) => {
+          try {
+            const response = await fetch(`/api/bunker/${state.lobbyId}/remove-bot`, {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ botId: id }),
+            });
+      
+            if (!response.ok) {
+              throw new Error("Ошибка при удалении бота");
+            }
+      
+            return {
+              players: state.players.filter((player) => player.id !== id || !player.isBot),
+            };
+          } catch (error) {
+            console.error(error);
+            return state; // Если ошибка, не меняем состояние
+          }
         });
       },
       startGame: () => {

@@ -5,19 +5,34 @@ import { NextResponse } from "next/server";
 // nfie3j5kb67kmd2m7fnh7mar01bkfnjsmjm8
 export async function GET(
   req: Request,
-  { params }: { params: { lobbyId: string } }
+  { params }: { params: { bunkerId: string } }
 ) {
-  const { lobbyId } = params;
+  const {bunkerId } = params;
   try {
-    const bunkers = await db.bunker.findUnique({
+    const bunker = await db.bunker.findUnique({
       where: {
-        id: lobbyId,
+        id: bunkerId
       },
       include: {
+
         profile: true,
+        members:{include:{profile:true}}
       },
     });
-    return NextResponse.json(bunkers);
+
+    if (!bunker) {
+      return NextResponse.json({ error: "Бункер не найден" }, { status: 404 });
+    }
+    
+    return NextResponse.json({
+      id: bunker.id,
+      players: bunker.members.map((member) => ({
+        id: member.profile.id,
+        name: member.profile.name,
+        isBot: member.profile.isBot,
+      })),
+      status: bunker.status,
+    });
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error: "бункер не найден" }, { status: 500 });

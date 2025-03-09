@@ -46,6 +46,10 @@ export default function GamaPage({ params }: { params: { gameId: string } }) {
         return;
         <p>загрзка персонажей</p>;
         break;
+        case"CHARACTER_DISCLOSURE":
+        return
+        <p>раскрытие карт</p>;
+        break;
       case "DISCUSSION":
         return;
         <p>дискутирование</p>;
@@ -90,7 +94,7 @@ export default function GamaPage({ params }: { params: { gameId: string } }) {
           <li>игроки загружаются</li>
         )}
       </ul>
-      {renderPhaseContnt()}
+      {renderPhaseContent()}
       
       {phase !== "FINAL" && <button onClick={handleNextPhase}>+фаза</button>}
       {/* <button>-фаза</button> */}

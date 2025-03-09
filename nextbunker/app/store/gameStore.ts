@@ -17,7 +17,7 @@ interface Character {
 }
 interface GameState {
   gameId: string | null;
-  phase: "WAITING" | "CHARACTER_SELECTION" | "DISCUSSION" | "VOTING" | "FINAL";
+  phase: "WAITING" | "CHARACTER_SELECTION" |"CHARACTER_DISCLOSURE"| "DISCUSSION" | "VOTING" | "FINAL";
   players: Player[];
   actions: { [playerId: string]: string };
   setGameData: (gameId: string, players: Player[]) => void;
@@ -57,6 +57,7 @@ export const useGameStore = create<GameState>()((set) => ({
       const phases: readonly GameState["phase"][] = [
         "WAITING",
         "CHARACTER_SELECTION",
+        "CHARACTER_DISCLOSURE",
         "DISCUSSION",
         "VOTING",
         "FINAL",

@@ -31,7 +31,7 @@ export default function Home() {
     } else {
       alert("MAX 8 PLAYERS");
     }
-    addBot();
+ 
   };
 
   // const removeLastBot = () => {
@@ -77,11 +77,6 @@ try {
   console.error(error);
   alert("Ошибка при запуске игры");
 }
-   
-    
-
-
-    
   };
 
   useEffect(() => {
@@ -94,7 +89,12 @@ try {
         console.log(error);
       }
     };
-    if (bunkerId) fetchLobbyData();
+    if (bunkerId) {
+      fetchLobbyData(); // Загрузка при входе
+      const interval = setInterval(fetchLobbyData, 100); // ✅ Автообновление каждые 3 секунды
+  
+      return () => clearInterval(interval); // Очистка таймера при выходе
+    }
   }, [bunkerId, setLobbyData]);
   // bunkerId
   return (
@@ -104,13 +104,15 @@ try {
       {user&&user.emailAddresses[0]?.emailAddress}
       <ul>
         {players.map((player) => (
-          <li key={player.id}>{player.name}     <button onClick={() => removeBot(player.id)} disabled={players.length < 1}>
-          удалить бота
-        </button></li>
+          <li key={player.id}>{player.name}     
+            <button onClick={() => removeBot(player.id)} disabled={!players.some(p => p.isBot)}>
+              удалить бота
+            </button>
+        </li>
           
         ))}
       </ul>
-      <button onClick={addBot} disabled={players.length >= 8}>
+      <button onClick={async () => await addBot()} disabled={players.length >= 8}>
         добавить бота
       </button>
   
