@@ -31,7 +31,7 @@ export default function GamaPage({ params }: { params: { gameId: string } }) {
       assignCharacters();
     }
   }, [phase, assignCharacters]);
-  
+
   const handleNextPhase = () => {
     nextPhase();
   };
@@ -46,8 +46,8 @@ export default function GamaPage({ params }: { params: { gameId: string } }) {
         return;
         <p>загрзка персонажей</p>;
         break;
-        case"CHARACTER_DISCLOSURE":
-        return
+      case "CHARACTER_DISCLOSURE":
+        return;
         <p>раскрытие карт</p>;
         break;
       case "DISCUSSION":
@@ -67,15 +67,15 @@ export default function GamaPage({ params }: { params: { gameId: string } }) {
         return;
         <p>хз какая фазв</p>;
         break;
-    }    
-  };    
-//  _______________________  
-//   //     *             |
-//   //    <=>            |
-//   //   <<=>>           |
-//   //  <<<=>>>          |
-//   // <<<===>>>         |
-// _______________________|
+    }
+  };
+  //  _______________________
+  //   //     *             |
+  //   //    <=>            |
+  //   //   <<=>>           |
+  //   //  <<<=>>>          |
+  //   // <<<===>>>         |
+  // _______________________|
   return (
     <div>
       <h1 className="text-3xl">Игра</h1>
@@ -84,10 +84,16 @@ export default function GamaPage({ params }: { params: { gameId: string } }) {
       <ul>
         {players?.length > 0 ? (
           players.map((player) => (
-            <li key={player.id}>
-              {player.name}-{player.isBot}-{player.character?.biology}-
+            <li className="border p-4" key={player.id}>
+                <p>{player.name}</p>
+                <p>{player.isBot ? "(БОТ)" : "(ИГРОК)"}</p>
+                <p>{player.character?.biology}</p>
+
+
+            
+              {/* {player.name}-{player.isBot}-{player.character?.biology}-
               {player.character?.health}-{player.character?.item}-
-              {player.character?.name}-{player.character?.profession}
+              {player.character?.name}-{player.character?.profession} */}
             </li>
           ))
         ) : (
@@ -95,9 +101,14 @@ export default function GamaPage({ params }: { params: { gameId: string } }) {
         )}
       </ul>
       {renderPhaseContent()}
-      
+
       {phase !== "FINAL" && <button onClick={handleNextPhase}>+фаза</button>}
       {/* <button>-фаза</button> */}
     </div>
   );
 }
+
+
+  //  /* {player.name}-{player.isBot}-{player.character?.biology}-
+  //             {player.character?.health}-{player.character?.item}-
+  //             {player.character?.name}-{player.character?.profession
