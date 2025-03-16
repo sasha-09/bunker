@@ -27,10 +27,10 @@ export default function GamaPage({ params }: { params: { gameId: string } }) {
   }, [gameId, setGameData]);
 
   useEffect(() => {
-    if (phase === "CHARACTER_SELECTION") {
+    if (phase === "CHARACTER_SELECTION"&& players.length>0) {
       assignCharacters();
     }
-  }, [phase, assignCharacters]);
+  }, [phase, assignCharacters,players]);
 
   const handleNextPhase = () => {
     nextPhase();
@@ -39,34 +39,30 @@ export default function GamaPage({ params }: { params: { gameId: string } }) {
   const renderPhaseContent = () => {
     switch (phase) {
       case "WAITING":
-        return;
-        <p>мы ждем игроков</p>;
-        break;
+        return <p>мы ждем игроков</p>
       case "CHARACTER_SELECTION":
-        return;
-        <p>загрзка персонажей</p>;
-        break;
+        return <p>загрзка персонажей</p>;
+       
+        
       case "CHARACTER_DISCLOSURE":
-        return;
-        <p>раскрытие карт</p>;
-        break;
+        return <p>раскрытие карт</p>;
+        
+        
       case "DISCUSSION":
-        return;
-        <p>дискутирование</p>;
-        break;
+        return <p>дискутирование</p>;
+        
+    
       case "VOTING":
-        return;
-        <p>голосование</p>;
-        break;
+        return <p>голосование</p>;
+       
+    
       case "FINAL":
-        return;
-        <p>финал</p>;
+        return <p>финал</p>;
+        
 
-        break;
       default:
-        return;
-        <p>хз какая фазв</p>;
-        break;
+        return <p>хз какая фаза</p>;
+      
     }
   };
   //  _______________________
@@ -87,7 +83,17 @@ export default function GamaPage({ params }: { params: { gameId: string } }) {
             <li className="border p-4" key={player.id}>
                 <p>{player.name}</p>
                 <p>{player.isBot ? "(БОТ)" : "(ИГРОК)"}</p>
-                <p>{player.character?.biology}</p>
+                {player.character ? (
+                <>
+                  <p>Имя персонажа: {player.character.name}</p>
+                  <p>Биология: {player.character.biology}</p>
+                  <p>Профессия: {player.character.profession}</p>
+                  <p>Здоровье: {player.character.health}</p>
+                  <p>Предмет: {player.character.item}</p>
+                </>
+              ) : (
+                <p>Персонаж не назначен</p>
+              )}
 
 
             

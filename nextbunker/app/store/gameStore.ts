@@ -32,9 +32,14 @@ export const useGameStore = create<GameState>()((set) => ({
   actions: {},
   setGameData: (gameId, players) => {
     set({ gameId, players, phase: "CHARACTER_SELECTION" });
+
   },
   assignCharacters: () => {
     set((state) => {
+      if (state.players.every((player) => player.character !== null)) {
+        return state;
+      }
+
       const randomFromArray = (array: string[]) => array[Math.floor(Math.random() * array.length)];
       
       const name = ["fjdd17fjs3fhwv30heva452fj2hr44aogve90kwbw2","g3g3f1238j5g2-1634bj4gf22-56n7kfs22335hjk-8y65","dc6ee94f-187a-44f5-a7c0-ba4ac1480d5d"]
@@ -47,23 +52,19 @@ export const useGameStore = create<GameState>()((set) => ({
       
       
 
-
-      const characters = state.players.map((player) => ({
-        id: player.id,
-        name: randomFromArray(name),
-        biology: randomFromArray(biology),
-        profession: randomFromArray(profession),
-        health: randomFromArray(health),
-        item: randomFromArray(item),
+      const updatedPlayers = state.players.map((player) => ({
+        ...player,
+        character: player.character ?? {
+          id: player.id,
+          name: randomFromArray(name),
+          biology: randomFromArray(biology),
+          profession: randomFromArray(profession),
+          health: randomFromArray(health),
+          item: randomFromArray(item),
+        },
       }));
       
-      const updatedPlayers = state.players.map((player, index) => ({
-        ...player,
-        character: characters[index],
-      }));
-      return {
-        players: updatedPlayers,
-      };
+      return { players: updatedPlayers };
     });
   },
   nextPhase: () => {
